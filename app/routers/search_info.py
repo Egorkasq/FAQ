@@ -38,9 +38,7 @@ async def search_info(req_info: FaqInfo):
                         "like": prepare_test_req(req_info.text_for_search),
                         "min_term_freq": 1,
                         "min_doc_freq": 1,
-                        "max_query_terms": 15,
-                        
-                        
+                        "max_query_terms": 15,            
                     },
                 },
             }
@@ -50,11 +48,9 @@ async def search_info(req_info: FaqInfo):
 
     except Exception as e:
         raise HTTPException(status.HTTP_408_REQUEST_TIMEOUT, "Elastic search server is unvailable") from e
-
     result = union_find_info([multi_find_results, like_find_results])
-    print(result)
     if len(result) == 0:
-        return HTTPException(status.HTTP_404_NOT_FOUND, "Information wasn't found")
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Information wasn't found")
     return FoundInfo(possible_answers=result)
 
 
@@ -82,10 +78,9 @@ def save_info_es(info: ESInfo):
 )
 async def get_answers(question: FaqInfo):
     try:
-        print(question.text_for_search)
         result = es_client.search(index="faq", body={"query": {"match": {'name': question.text_for_search}}})
+        result = result["hits"]["hits"][0]
+        text_description = result["_source"]["description"]
     except Exception as e:
         raise HTTPException(status.HTTP_408_REQUEST_TIMEOUT, "ES anvailable") from e
-    result = result["hits"]["hits"][0]
-    text_description = result["_source"]["description"]
     return AnswersText(answer_text=text_description)

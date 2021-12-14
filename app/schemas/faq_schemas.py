@@ -7,7 +7,7 @@ class FaqInfo(BaseModel):
 
 
 class FoundInfo(BaseModel):
-    possible_answers: list[str]
+    possible_answers: list[str] = []
 
 
 class TextIndexFormat(BaseModel):
