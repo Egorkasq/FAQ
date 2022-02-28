@@ -1,7 +1,6 @@
 from elasticsearch import Elasticsearch
-from datetime import datetime
 from fastapi import FastApi
-from schema import ReqInfo
+from app.schemas import ReqInfo
 
 
 from elasticsearch import Elasticsearch

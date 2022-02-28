@@ -78,41 +78,8 @@ with open("data/questions_list.json", "r") as json_file:
 for num, element in enumerate(json_file):
     temp_dict = {
         "name": element,
-        "description": json_file.get(element)
+        "description": json_file.get(element).get("description"),
+        "keyword": json_file.get(element).get("keyword"),
     }
-    print(temp_dict)
+    print("temp_dict", temp_dict)
     es_client.index(index="faq", id=num, body=temp_dict)
-
-
-
-for i in range(5):
-    temp = es_client.get(index="faq", id=i)
-    print(temp)
-
-
-field = "смена общежития"
-query_body = {
-            "query": 
-                {
-                    "more_like_this": 
-                    {
-                        "fields": ["name", "description"], 
-                        "like": field,
-                        "min_term_freq": 1,
-                        "min_doc_freq": 1,
-                        "max_query_terms": 15,
-                        
-                    }
-                },
-            }
-
-            
-test_2 = es_client.search(index="faq", body={"query": {"match": {'name':field}}})
-# print(es_client.status)
-test_3 = es_client.search(index="faq", body=query_body)
-
-test_4 = es_client.search(index="faq", body={"query": {"multi_match":{"query":field, "fields":["name", "keywords ^ 2", "description ^ 3"], "fuzziness": "AUTO"}}, "size": 2})
-
-print(return_results(test_2))
-print(return_results(test_3))
-print(return_results(test_4))

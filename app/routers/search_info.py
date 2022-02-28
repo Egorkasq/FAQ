@@ -62,10 +62,16 @@ async def search_info(req_info: FaqInfo):
         408: {"description": "Elastic search server is unvailable"},
     })
 def save_info_es(info: ESInfo):
-    try:
-        es_client.index(index="faq", body=info)
-    except Exception as e:
-        raise HTTPException(status.HTTP_408_REQUEST_TIMEOUT, "ES anvailable") from e
+
+    # try:
+    temp_dict = {
+        "name": info.question,
+        "description": info.answer.description,
+        "keyword": info.answer.keyword
+    }
+    es_client.index(index="faq", body=temp_dict)
+    # except Exception as e:
+        # raise HTTPException(status.HTTP_408_REQUEST_TIMEOUT, "ES anvailable") from e
 
 
 @info_router.post(
