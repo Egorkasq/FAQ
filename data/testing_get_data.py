@@ -6,8 +6,8 @@ from elasticsearch import Elasticsearch
 from elasticsearch.client import IndicesClient
 
 
-# es_client = Elasticsearch("http://10.32.1.22:9200")
-es_client = Elasticsearch("http://0.0.0.0:9200")
+es_client = Elasticsearch("http://62.109.17.147:9200")
+# es_client = Elasticsearch("http://0.0.0.0:9200")
 
 es_index_client = IndicesClient(es_client)
 
@@ -68,26 +68,6 @@ configurations = {
 # create index
 # status = es_index_client.create(index="faq", body=configurations)
 # print(status)
-
-
-with open("data/questions_list.json", "r") as json_file:
-    json_file = json.load(json_file)
-
-
-# additing data
-for num, element in enumerate(json_file):
-    temp_dict = {
-        "name": element,
-        "description": json_file.get(element)
-    }
-    print(temp_dict)
-    es_client.index(index="faq", id=num, body=temp_dict)
-
-
-
-for i in range(5):
-    temp = es_client.get(index="faq", id=i)
-    print(temp)
 
 
 field = "смена общежития"
